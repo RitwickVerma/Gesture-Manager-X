@@ -4,5 +4,5 @@ Type=Application
 Categories=Utility
 Terminal=false
 Exec=/usr/bin/gesture-manager-x
-Name=Gesture Manager
+Name=Gesture Manager X
 Icon=/usr/share/gesture-manager-x/icon.svg
