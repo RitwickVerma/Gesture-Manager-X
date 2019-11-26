@@ -158,12 +158,12 @@
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">window</property>
-    <property name="program_name">Gestures Manager</property>
+    <property name="program_name">Gestures Manager X</property>
     <property name="version">0.1</property>
-    <property name="website">https://github.com/gabmus/gesturesmanager</property>
+    <property name="website">https://github.com/RitwickVerma/Gesture-Manager-X</property>
     <property name="authors">Gabriele Musco aka GabMus (frontend)
 Mark Blakeney aka bulletmark (libinput-gestures)
-Sabrina B. (hand model for the animations)</property>
+Ritwick Verma aka RitwickVerma (added enhancements)</property>
     <property name="logo">icon.svg</property>
     <property name="license_type">gpl-3-0</property>
     <child type="titlebar">

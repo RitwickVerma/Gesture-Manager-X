@@ -19,7 +19,7 @@ class App(Gtk.Application):
 
     def __init__(self):
         Gtk.Application.__init__(self,
-                                 application_id="org.gabmus.gesturemanager",
+                                 application_id="org.laughingstock.gesturemanagerx",
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.connect("activate", self.activateCb)
 
@@ -29,8 +29,8 @@ class App(Gtk.Application):
 
     def activateCb(self, app):
         window = builder.get_object("window")
-        window.set_wmclass("Gesture Manager", "Gesture Manager")
-        window.set_title("Gesture Manager")
+        window.set_wmclass("Gesture Manager X", "Gesture Manager X")
+        window.set_title("Gesture Manager X")
         app.add_window(window)
         appMenu = Gio.Menu()
         appMenu.append("About", "app.about")
