@@ -7,6 +7,8 @@ Graphical manager for setting libinput-gestures touchpad gestures.
 
 ## Installing
 
+Please read [libinput-gestures](https://github.com/bulletmark/libinput-gestures) first.
+
 ### Arch Linux
 
 You can find the `gesture-manager-x-git` package on AUR.

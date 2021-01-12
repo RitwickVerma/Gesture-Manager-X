@@ -7,7 +7,7 @@ swipe_threshold = fh.get_element(SWIPE_THRESHOLD)
 gesture_timeout = fh.get_element(GESTURE_TIMEOUT)
 
 if swipe_threshold == '':
-    swipe_threshold = "0.0"
+    swipe_threshold = "0"
     fh.update_element(SWIPE_THRESHOLD, swipe_threshold)
 
 if gesture_timeout == '':
@@ -15,7 +15,7 @@ if gesture_timeout == '':
     fh.update_element(GESTURE_TIMEOUT, gesture_timeout)
 
 def set_swipe_threshold(dist):
-    fh.update_element(SWIPE_THRESHOLD, str(dist))
+    fh.update_element(SWIPE_THRESHOLD, str(int(dist)))
 
 def set_gesture_timeout(timeout):
     fh.update_element(GESTURE_TIMEOUT, str(timeout))
