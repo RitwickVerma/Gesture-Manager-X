@@ -28,4 +28,4 @@ Then all you have to do is opening the newly cloned folder, and running `main.py
 
 
 ## Disclaimer
-This is a fork of [gestureManager](https://github.com/GabMus/gestureManager) by [GabMus](https://github.com/GabMus) with added gestures available in [libinput-gestures](https://github.com/bulletmark/libinput-gestures). All of the credit goes to [GabMus](https://github.com/GabMus). 
+This is a fork of [gestureManager](https://github.com/GabMus/gestureManager) by [GabMus](https://github.com/GabMus) with added gestures and settings available in [libinput-gestures](https://github.com/bulletmark/libinput-gestures).
