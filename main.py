@@ -4,10 +4,11 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gio, Gdk, GdkPixbuf
 import os
 import sys
-import gestureHelper
-import daemonHelper
+import gestureHelper as gh
+import daemonHelper as dh
+import settingsHelper as sh
 
-EXEC_FOLDER = os.path.realpath(os.path.dirname(__file__)) + "/"
+EXEC_FOLDER = os.path.dirname(os.path.realpath(__file__)) + "/"
 builder = Gtk.Builder()
 builder.add_from_file(EXEC_FOLDER + "ui.glade")
 HOME = os.environ.get('HOME')
@@ -29,7 +30,7 @@ class App(Gtk.Application):
 
     def activateCb(self, app):
         window = builder.get_object("window")
-        window.set_wmclass("Gesture Manager X", "Gesture Manager X")
+        # window.set_wmclass("Gesture Manager X", "Gesture Manager X")
         window.set_title("Gesture Manager X")
         app.add_window(window)
         appMenu = Gio.Menu()
@@ -55,7 +56,7 @@ class App(Gtk.Application):
 listbox_gestures=builder.get_object('listBoxGestures')
 entry_shortcut_command=builder.get_object('entryShortcutCommand')
 # image_gesture_animation=builder.get_object('imageGestureAnimation')
-popovermenu_daemon_control=builder.get_object('popoverMenuDaemonControl')
+popovermenu_daemon_control = builder.get_object('popoverMenuDaemonControl')
 listbox_popover_daemon_control=builder.get_object('ListboxPopoverDaemonControl')
 image_daemon_status=builder.get_object('imageDaemonStatus')
 switch_daemon_autostart=builder.get_object('switchDaemonAutostart')
@@ -64,9 +65,13 @@ button_start_daemon=builder.get_object('buttonStartDaemon')
 button_stop_daemon=builder.get_object('buttonStopDaemon')
 button_restart_daemon=builder.get_object('buttonRestartDaemon')
 
+popovermenu_settings_control = builder.get_object('popoverMenuSettingsControl')
+spin_button_swipe_threshold = builder.get_object('spinButtonSwipeThreshold')
+spin_button_gesture_timeout = builder.get_object('spinButtonGestureTimeout')
+
 STATUS_I_SIZE=Gtk.IconSize.MENU
 def update_daemon_status():
-    status=daemonHelper.get_daemon_running()
+    status=dh.get_daemon_running()
     if status:
         image_daemon_status.set_from_icon_name('gtk-yes', STATUS_I_SIZE)
         button_start_daemon.set_sensitive(False)
@@ -80,15 +85,15 @@ def update_daemon_status():
     image_daemon_status.show()
 
 def update_daemon_autostart_status():
-    status=daemonHelper.get_daemon_autostart()
+    status=dh.get_daemon_autostart()
     switch_daemon_autostart.set_state(status)
 
 def populate_gestures_listbox():
-    for g in gestureHelper.GESTURES_POSSIBLE:
+    for g in gh.GESTURES_POSSIBLE:
         box=Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         box.set_margin_top(6)
-        box.set_margin_left(6)
-        box.set_margin_right(6)
+        box.set_margin_start(6)
+        box.set_margin_end(6)
         box.set_margin_bottom(6)
         label=Gtk.Label()
         label.set_text(str(g).replace('_',' ',1))
@@ -99,7 +104,12 @@ def populate_gestures_listbox():
         listbox_gestures.add(row)
         listbox_gestures.show_all()
 
+def populate_settings():
+    spin_button_gesture_timeout.set_value(float(sh.gesture_timeout))
+    spin_button_swipe_threshold.set_value(float(sh.swipe_threshold))
+
 populate_gestures_listbox()
+populate_settings()
 update_daemon_status()
 update_daemon_autostart_status()
 
@@ -109,22 +119,20 @@ class Handler:
         Gtk.main_quit(*args)
 
     def on_buttonReassignShortcut_clicked(self, btn):
-        gestureHelper.add_gesture(listbox_gestures.get_selected_row().value,
+        gh.add_gesture(listbox_gestures.get_selected_row().value,
             entry_shortcut_command.get_text())
-        daemonHelper.restart_daemon()
+        dh.restart_daemon()
 
     def on_buttonRemoveGesture_clicked(self, btn):
-        gestureHelper.remove_gesture(listbox_gestures.get_selected_row().value)
+        gh.remove_gesture(listbox_gestures.get_selected_row().value)
         entry_shortcut_command.set_text('')
-        daemonHelper.restart_daemon()
+        dh.restart_daemon()
 
     def on_listBoxGestures_row_selected(self, listbox, row):
         if row:
-            gesture=row.value
-            entry_shortcut_command.set_text(
-                gestureHelper.gestures_list[str(gesture)])
-            # animation=GdkPixbuf.PixbufAnimation.new_from_file((gestureHelper.animation_files[str(gesture)]))
-            # image_gesture_animation.set_from_animation(animation)
+            gesture = row.value
+            command = gh.get_gesture(str(gesture))
+            entry_shortcut_command.set_text(command)
 
     def on_buttonDaemonControl_clicked(self, btn):
         popovermenu_daemon_control.show_all()
@@ -132,20 +140,29 @@ class Handler:
     # define start, stop, restart, autostart toggle
 
     def on_buttonStartDaemon_clicked(self, btn):
-        daemonHelper.start_daemon()
+        dh.start_daemon()
         update_daemon_status()
 
     def on_buttonStopDaemon_clicked(self, btn):
-        daemonHelper.stop_daemon()
+        dh.stop_daemon()
         update_daemon_status()
 
     def on_buttonRestartDaemon_clicked(self, btn):
-        daemonHelper.restart_daemon()
+        dh.restart_daemon()
         update_daemon_status()
 
     def on_switchDaemonAutostart_state_set(self, switch, state):
-        daemonHelper.set_daemon_autostart(state)
+        dh.set_daemon_autostart(state)
         update_daemon_autostart_status()
+
+    def on_buttonSettingsControl_clicked(self, btn):
+        popovermenu_settings_control.show_all()
+
+    def on_spinButtonSwipeThreshold_value_changed(self, btn):
+        sh.set_swipe_threshold(btn.get_value_as_int())
+    
+    def on_spinButtonGestureTimeout_value_changed(self, btn):
+        sh.set_gesture_timeout(btn.get_value())
 
 
 builder.connect_signals(Handler())
